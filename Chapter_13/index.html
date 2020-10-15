@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>My Homepage</title>
+    </head>
+    <body>
+
+        <script>
+            let numForm = /^\d*/;
+             function ask(question, properForm, example) {
+                 let answer = prompt(question);
+                 if (answer.match(properForm)) {
+                     alert(`5 times ${Number(answer)} is ${Number(answer * 5)}`);
+                 } else {
+                     ask(question + " ex. " + example, properForm, example);
+                 }
+             }
+             ask("Enter a number.", numForm, "5");
+        </script>
+        
+    </body>
+</html>
