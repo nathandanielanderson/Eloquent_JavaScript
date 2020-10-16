@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Build a Table</title>
+    </head>
+    <body>
+        
+        <h1>Build a Table</h1>
+
+        <!-- <table>
+            <tr>
+                <th>name</th>
+                <th>height</th>
+                <th>place</th>
+            </tr>
+            <tr>
+                <td>Kilimanjaro</td>
+                <td>5895</td>
+                <td>Tanzania</td>
+            </tr>
+        </table> -->
+        <script>
+            let mountains = [
+                {
+                    name: "Everest",
+                    height: "29035",
+                    place: "Nepal"
+                },
+                {
+                    name: "Mount Godwin Austen",
+                    height: "28250",
+                    place: "India"
+                },
+                {
+                    name: "Kangchenjunga",
+                    height: "28169",
+                    place: "Nepal"
+                },
+                {
+                    name: "Kilimanjaro",
+                    height: "5895",
+                    place: "Tanzania"
+                }
+            ];
+
+            function elt(type, ...children) {
+                let node = document.createElement(type);
+                for(let child of children) {
+                    if(typeof child != "string") node.appendChild(child);
+                    else node.appendChild(document.createTextNode(child));
+                }
+                return node;
+            }
+
+            function tableBuilder(arr, id) {
+                let tbl = document.createElement("table");
+                tbl.appendChild(elt("tr"));
+                for(let key of Object.keys(arr[0])) {
+                    tbl.firstChild.appendChild(elt("th", key));
+                }
+                for(let i = 0; i < arr.length; i++) {
+                    obj = arr[i];
+                    tbl.appendChild(elt("tr"));
+                    for(let key of Object.keys(obj)) {
+                        tbl.lastChild.appendChild(elt("td", obj[key]));
+                        if (Number(obj[key])) {
+                            tbl.lastChild.lastChild.style.textAlign = "right";
+                        }
+                    }
+                }
+                tbl.id = id;
+                document.body.appendChild(tbl);
+            }
+            tableBuilder(mountains, "mountains");
+        </script>
+    </body>
+</html>
