@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Mouse Trail</title>
+    </head>
+
+    <body>
+        <style>
+            .trail { /* className for the trail elements */
+              position: absolute;
+              height: 6px; width: 6px;
+              border-radius: 3px;
+              background: teal;
+            }
+            body {
+              height: 300px;
+            }
+          </style>
+
+          <script>
+            for(var i = 0; i < 50; i++) {
+                let elt = document.createElement("div");
+                elt.className = "trail";
+                document.body.appendChild(elt);
+            }
+            let trailElts = Array.from(document.querySelectorAll("div"));
+            let count = 0;
+            window.addEventListener("mousemove", trail);
+
+            function trail(moved) {
+                let dot = trailElts[count % trailElts.length];
+                dot.style.left = (moved.clientX - 3) + "px";
+                dot.style.top = (moved.clientY - 3) + "px";
+                count++;
+            }
+          </script>
+    </body>
+</html>

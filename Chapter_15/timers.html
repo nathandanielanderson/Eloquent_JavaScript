@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Handling Events</title>
+    </head>
+    <body>
+        
+
+        <script>
+            let bombTimer = setTimeout(() =>{
+                console.log("BOOM!");
+            }, 500);
+            if (Math.random() < .5) { // 50% chance
+                console.log("Defused.");
+                clearTimeout(bombTimer);
+            }
+
+            let scheduled = null;
+            window.addEventListener("mousemove", event => {
+                if (!scheduled) {
+                    setTimeout(() => {
+                        document.body.textContent = `Mouse at ${scheduled.pageX}, ${scheduled.pageY}`;
+                        scheduled = null;    
+                    }, 250);
+                }
+                scheduled = event;
+            });
+        </script>
+    </body>
+</html>
