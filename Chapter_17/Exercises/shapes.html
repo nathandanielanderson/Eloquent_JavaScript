@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Shapes</title>
+    </head>
+    <body>
+        <canvas width="400" height="600"></canvas>
+        <script>
+            let cx = document.querySelector("canvas").getContext("2d");
+            
+            function trap(x, y, base, top, height) {
+                let startX = x - (base / 2), startY = y + (height / 2);
+                cx.beginPath();
+                cx.moveTo(startX, startY);
+                cx.lineTo(startX + base, startY);
+                cx.lineTo(x + (top / 2), startY - height);
+                cx.lineTo(x - (top / 2), startY - height);
+                cx.closePath();
+                cx.stroke();
+            }
+
+            trap(100, 100, 50, 25, 25);
+
+            function redDiamond(x, y, width) {
+                let startX = x - (width / 2), startY = y;
+                cx.beginPath();
+                cx.moveTo(startX, startY);
+                cx.lineTo(x, y + (width / 2));
+                cx.lineTo(x + (width / 2), y);
+                cx.lineTo(x, y - (width / 2));
+                cx.closePath();
+                cx.fillStyle = "red";
+                cx.fill();
+            }
+
+            redDiamond(160, 100, 50);
+
+            function zigzag(x, y, height, width, points) {
+                let startX = x - (width / 2), startY = y - (height / 2);
+                cx.beginPath();
+                cx.moveTo(startX, startY);
+                for(let i = 0; i < points; i++) {
+                    cx.lineTo(i % 2 == 0 ? startX : startX + width, Math.ceil(startY + (i * height / (points - 1))));
+                }
+                cx.stroke();
+            } 
+
+            zigzag(220, 100, 50, 50, 13);
+
+            function spiral(x, y, rotations, segments) {
+                let currentX, currentY;
+                let lastX = x, lastY = y;
+                cx.beginPath();
+                cx.moveTo(lastX, lastY);
+                let endAngle =  2 * Math.PI * rotations;
+                let i = 0;
+                for (let angle = 0; angle < endAngle; angle += endAngle / segments) {
+                    i++;
+                    currentX = lastX + (i * Math.cos(angle) / (rotations * rotations));
+                    currentY = lastY + (i * Math.sin(angle) / (rotations * rotations));
+                    cx.lineTo(currentX, currentY);
+                    lastX = currentX;
+                    lastY = currentY;
+                }
+                cx.stroke();
+            }
+
+            spiral(280, 100, 3.45, 100);
+
+            function star(x, y, width, points) {
+                let startX = x + (width / 2), startY = y;
+                let pointCoords = [];
+                let angle = 0;
+                for (let i = 0; i < points; i++) {
+                    let coord = {x, y};
+                    coord.x = x + Math.cos(angle) * (width / 2);
+                    coord.y = y + Math.sin(angle) * (width / 2);
+                    pointCoords.push(coord);
+                    angle += (2 * Math.PI) / points;
+                    console.log(`angle : ${angle / (Math.PI)}PI\n cos: ${Math.cos(angle)}`);
+                }
+                console.log(pointCoords);
+                cx.beginPath();
+                cx.fillStyle = "yellow";
+                cx.moveTo(pointCoords[pointCoords.length - 1].x, pointCoords[pointCoords.length - 1].y);
+                for (let point of pointCoords) { 
+                    cx.quadraticCurveTo(x, y, point.x, point.y);
+                }
+                cx.fill();
+            }
+
+            star(350, 100, 60, 8);
+        </script>
+    </body>
+</html>
