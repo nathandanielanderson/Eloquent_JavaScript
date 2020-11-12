@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Conway's Game of Life</title>
+    </head>
+    <body>
+        <button>Next Gen</button><br>
+        <script>
+            const width = 20, height = 20;
+            let rows = [];
+            for(let y = 0; y < height; y++) {
+                let boxes = [];
+                for(let x = 0; x < width; x++) {
+                    let box = document.createElement("input");
+                    box.type = "checkbox";
+                    box.checked = (Math.ceil(10 * Math.random()) % 2 == 0);
+                    document.body.appendChild(box);
+                    boxes.push(box);
+                }
+                rows.push(boxes);
+                document.write("<br>");
+            }
+
+            function update() {
+               let newRows = [];
+                for (let y = 0; y < rows.length; y ++) {
+                    let newBoxes = [];
+                    for(let x = 0; x < rows[y].length; x++) {
+                        let neighbors = [
+                            { y: y - 1, x: x - 1},
+                            { y: y - 1, x: x},
+                            { y: y - 1, x: x + 1},
+                            { y: y, x: x - 1},
+                            { y: y, x: x + 1},
+                            { y: y + 1, x: x -1},
+                            { y: y + 1, x: x},
+                            { y: y + 1, x: x + 1}
+                        ]
+                        let count = 0;
+
+                        for (let neighbor of neighbors) {
+                            if(neighbor.y < 0 || neighbor.y >= height ||
+                               neighbor.x < 0 || neighbor.x >= width) continue;
+                            if (rows[neighbor.y][neighbor.x]) {
+                                if (rows[neighbor.y][neighbor.x].checked) count++;
+                            }
+                        }
+                        let newBox = document.createElement("input");
+                        newBox.type = "checkbox";
+                        newBox.checked = rows[y][x].checked;
+                        if(count < 2 || count > 3) newBox.checked = false;
+                        if(count == 3) newBox.checked = true;
+                        newBoxes.push(newBox);
+                        
+                    }
+                    newRows.push(newBoxes);
+                }
+                rows = newRows;
+                
+                for (let row of rows) {
+                    for ( let box of row) {
+                        document.body.appendChild(box);
+                    }
+                    document.write("<br>");
+                }
+            }
+
+            let button = document.querySelector("button");
+            button.addEventListener("click", () => {
+                update();
+            });
+            
+        </script>
+    </body>
+</html>

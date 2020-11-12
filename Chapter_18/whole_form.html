@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>The Form as a Whole</title>
+    </head>
+    <body>
+        <form action="example/submit.html">
+            <!-- Name: <input type="text" name="name"><br>
+            Password: <input type="password" name="password"><br>
+            <button type="submit">Log in</button> -->
+            Value: <input type="text" name="value">
+            <button type="submit">Save</button>
+        </form>
+        <script>
+            let form = document.querySelector("form");
+            // console.log(form.elements[1].type);
+            // // -> password
+            // console.log(form.elements.password.type);
+            // // -> password
+            // console.log(form.elements.name.form == form);
+            // // ->true
+            form.addEventListener("submit", event => {
+                console.log("Saving value", form.elements.value.value);
+                event.preventDefault();
+            });
+        </script>
+    </body>
+</html>

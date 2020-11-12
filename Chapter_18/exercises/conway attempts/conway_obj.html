@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Conway Object</title>
+    </head>
+    <body>
+        <button>Next Gen</button><br>
+        <div id="grid"></div>
+        <script>
+            const height = 3, width = 3;
+            let rows = [], newRows = [];
+            for (let y= 0; y < height; y++) {
+                let row = [];
+                for (let x = 0; x < width; x++) {
+                    let box = {
+                        type: "checkbox",
+                        x: x,
+                        y: y,
+                        checked: true,
+                        neighbors: [],
+                        neighborCount: 0
+                    }
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            if (i == 0 && j == 0) continue;
+                            if (box.y + i >= 0 && box.y + i < height && box.x + j >= 0 && box.x + j < width){
+                                box.neighbors.push([box.y + i, box.x + j]);
+                            }
+                        }
+                    }
+                    row.push(box);
+                }
+                rows.push(row);
+            }
+            buildTable(rows);
+            console.log(rows);
+            let boxes = [0, 1, 2, 3 , 4, 5, 6, 7, 8];
+            console.log(Math.floor(boxes.length / width));
+
+            // for (let row of rows) {
+            //     for (let box of row) {
+            //         let elt = document.createElement("input");
+            //         elt.type = box.type;
+            //         elt.checked = box.checked;
+            //         elt.setAttribute("data-y", box.y);
+            //         elt.setAttribute("data-x", box.x);
+            //         elt.addEventListener("change", () => {
+            //             box.checked = elt.checked;
+            //             updateNeighbors();
+            //         });
+            //         document.body.appendChild(elt);
+            //     }
+            //     document.body.appendChild(document.createElement("BR"));
+            // }
+            function buildTable(array) {
+                let table = document.createElement("table");
+                for (let row of rows) {
+                    let tableRow = document.createElement("tr");
+                    for (let box of row) {
+                        let elt = document.createElement("input");
+                        elt.type = box.type;
+                        elt.checked = box.checked;
+                        elt.setAttribute("data-y", box.y);
+                        elt.setAttribute("data-x", box.x);
+                        elt.addEventListener("change", () => {
+                            box.checked = elt.checked;
+                            updateNeighbors();
+                        });
+                        let cell = document.createElement("td");
+                        cell.appendChild(elt);
+                        tableRow.appendChild(cell);
+                    }
+                    table.appendChild(tableRow);
+                }
+                let grid = document.querySelector("#grid");
+                for (let child of grid.children) {
+                    grid.removeChild(child);
+                }
+                grid.appendChild(table);
+                console.log(grid.children);
+            }
+            
+            function applyRules() {
+                newRows = rows;
+                for (let row of rows) {
+                    for (let box of row) {
+                        if(box.neighborCount < 2 || box.neighborCount > 3) {
+                            newRows[rows.indexOf(row)][row.indexOf(box)].checked = false;
+                        }
+                        if(!box.checked && box.neighborCount == 3) {
+                            newRows[rows.indexOf(row)][row.indexOf(box)] = true;
+                        }
+                    }
+                }
+                updateNeighbors();
+                
+            }
+
+            function updateNeighbors() {
+                for (let row of rows) {
+                    for (let box of row) {
+                        box.neighborCount = 0;
+                        for(let coords of box.neighbors) {
+                            if (rows[coords[0]][coords[1]].checked) {
+                                newRows[rows.indexOf(row)][row.indexOf(box)].neighborCount += 1;
+                            }
+                            
+                        }
+                        
+                    }
+                }
+            }
+
+            function overwriteRows() {
+                rows = newRows;
+                buildTable(rows);
+            }
+
+            let button = document.querySelector("button");
+            button.addEventListener("click", () => overwriteRows());
+        </script>
+    </body>
+</html>

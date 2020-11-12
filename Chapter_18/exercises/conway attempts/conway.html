@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Conway Twitty</title>
+    </head>
+    <body>
+        <button>Next Gen</button><br>
+        <script>
+            const width = 10, height = 10;
+            let currentGrid = grid(height, width);
+            function grid(width, height){
+                let rows = [];
+                for (let y = 0; y < height; y++) {
+                    let elts = [];
+                    for (let x = 0; x < width; x++) {
+                        let box = document.createElement("input");
+                        box.type = "checkbox";
+                        box.checked = (Math.ceil(10 * Math.random())) % 2 == 0;
+                        box.setAttribute("data-x", x);
+                        box.setAttribute("data-y", y);
+                        box.setAttribute("data-neighbors", 0);
+                        box.addEventListener("change", () => {
+                            if (box.checked) updateNeighbors(box, 1);
+                            else updateNeighbors(box, -1);
+                        });
+                        elts.push(box);
+                    }
+                    rows.push(elts);
+                }
+
+                return rows;
+            }
+            for (let i = 0; i < currentGrid.length; i++) {
+                for (let box of currentGrid[i]) {
+                    document.body.appendChild(box);
+                }
+                document.body.appendChild(document.createElement("BR"));
+            }
+            updateGrid();
+            function updateGrid() {
+                for (let i = 0; i < currentGrid.length; i++) {
+                    for (let box of currentGrid[i]) {
+                        document.body.removeChild(box);
+                    }
+                    if (document.querySelector("BR")) document.body.removeChild(document.querySelector("BR"));
+                }
+
+                for (let i = 0; i < currentGrid.length; i++) {
+                    for (let box of currentGrid[i]) {
+                        updateNeighbors(box);
+                        document.body.appendChild(box);
+                    }
+                    document.body.appendChild(document.createElement("BR"));
+                }
+                
+            }
+
+            function updateNeighbors(box, num) {
+                    let checked = box.checked;
+                    let y = Number(box.getAttribute("data-y")), x = Number(box.getAttribute("data-x"));
+                    // console.log("y:", y, "x:", x); 
+                    for (let dY = -1; dY <= 1; dY++) {
+                        for (dX = -1; dX <= 1; dX++) {
+                            if(dY == 0 && dX == 0) continue;
+                            let neighbor = {y: y + dY, x: x + dX};
+                            if (neighbor.y > 0 && neighbor.y < width && 
+                                neighbor.x > 0 && neighbor.x < height) {
+                                    let neighBox = currentGrid[neighbor.y][neighbor.x];
+                                    console.log(Number(neighBox.getAttribute("data-neighbors")));
+                                    // neighBox.setAttribute("data-neighbors", );
+                            }
+                        }
+                    }
+
+                            
+            }
+            
+        </script>
+    </body>
+</html>

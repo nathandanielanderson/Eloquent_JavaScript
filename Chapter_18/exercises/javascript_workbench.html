@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>A JavaScript Workbench</title>
+    </head>
+    <body>
+        <textarea style="width: 45%; height: 500px" id="codeArea"></textarea><button id="runButton">Run Code</button>
+        <textarea disabled style="position: absolute; width: 45%; height: 500px;" id="consoleArea"></textarea>
+        <script>
+            let codeArea = document.querySelector("#codeArea");
+            let consoleArea = document.querySelector("#consoleArea");
+            let runButton = document.querySelector("#runButton");
+            codeArea.addEventListener("keydown", event => {
+                if (event.keyCode == 9) {
+                    codeArea.value = codeArea.value + "\t"; 
+                    event.preventDefault();
+                }
+            });
+            runButton.addEventListener("click", () => {
+                let code = Function(codeArea.value);
+                try {
+                    consoleArea.value = code();
+                } catch(error) {
+                    consoleArea.value = error;
+                }
+            });
+        </script>
+    </body>
+</html>

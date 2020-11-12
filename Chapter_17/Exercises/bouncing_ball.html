@@ -40,12 +40,13 @@
                 if (lastTime != null) {
                     if(ball.y >= 475 || ball.y < 45) angle = 2 * Math.PI - angle;
                     if(ball.x >= 475 || ball.x < 45) angle = Math.PI - angle;
-                    speed = new Vec(Math.cos(angle), Math.sin(angle));
+                    speed = new Vec(Math.cos(angle), Math.sin(angle)).times(5);
                     cx.clearRect(20, 20, 480, 480);
                     ball = ball.plus(speed);
                     cx.beginPath();
                     cx.arc(ball.x, ball.y, 25, 0, 7);
-                    cx.stroke();
+                    cx.fillStyle = "red";
+                    cx.fill();
 
                 }
                 requestAnimationFrame(newTime => animate(newTime, time));
