@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Ball</title>
+    </head>
+    <body>
+        <canvas width="600" height="600"></canvas>
+
+        <script>
+            class Vec {
+                constructor(x, y) {
+                    this.x = x;
+                    this.y = y;
+                }
+
+                plus(other) {
+                    return new Vec(this.x + other.x, this.y + other.y);
+                }
+
+                times(factor) {
+                    return new Vec(factor * this.x, factor * this.y);
+                }
+            }
+            let cx = document.querySelector("canvas").getContext("2d");
+            cx.strokeRect(0, 0, 500, 500);
+            let ball = new Vec(250, 250);
+            let angle = Math.random() * 2 * Math.PI;
+            let speed = new Vec(Math.cos(angle), Math.sin(angle));
+            function animate(time, lastTime) {
+                if(lastTime != null) {
+                    if (ball.x < 30 || ball.x > 470) angle = Math.PI - angle;
+                    if (ball.y < 30 || ball.y > 470) angle = (2 * Math.PI) - angle;
+                    speed = new Vec(Math.cos(angle), Math.sin(angle)).times(5);
+                    ball = ball.plus(speed);
+                    cx.clearRect(1, 1, 499, 499);
+                    cx.beginPath();
+                    cx.arc(ball.x, ball.y, 25, 0, 7);
+                    cx.fill();
+                }
+                requestAnimationFrame(newTime => animate(newTime, time));
+            }
+            requestAnimationFrame(animate);
+        </script>
+    </body>
+</html>
