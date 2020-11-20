@@ -196,49 +196,89 @@ class ColorSelect {
     syncState(state) { this.input.value = state.color; }
 }
 
-function draw(pos, state, dispatch) {
-    function drawPixel({x, y}, state) {
-        let drawn = [];
-        drawn.push({x, y, color: state.color});
-        dispatch({picture: state.picture.draw(drawn)});
+// function draw(pos, state, dispatch) {
+//     function drawPixel({x, y}, state) {
+//         let drawn = [];
+//         drawn.push({x, y, color: state.color});
+//         dispatch({picture: state.picture.draw(drawn)});
+//     }
+//     drawPixel(pos, state);
+//     return drawPixel;
+// }
+
+// function improvedDraw(start, state, dispatch) {
+//     if(!state.lastPixel) state.lastPixel = null;
+//     function gapBetween(pixel, lastPixel) {
+//         if (state.lastPixel == null) return false;
+//         let gap = true;
+//         let connected = [{dx: -1, dy: -1}, {dx: 0, dy: -1}, {dx: 1, dy: -1},
+//         {dx: -1, dy: 0}, {dx: 0, dy: 0}, {dx: 1, dy: 0}, 
+//         {dx: -1, dy: 1}, {dx: 0, dy: 1}, {dx: 1, dy: 1}];
+//         connected.forEach(({dx, dy}) => {
+//             if(lastPixel.x + dx == pixel.x && lastPixel.y + dy == pixel.y) gap = false;
+//         });
+//         return gap;
+//     }
+//     function getLine(first, last) {
+//         let points = [];
+//         let slope = (first.y - last.y) / (first.x - last.x);
+//         for(let y = first.y; y <= last.y; y++) {
+//             let x = Math.round(y / slope);
+//             points.push({x, y, color: state.color});
+//         }
+//         return points;
+//     }   
+//     function drawPixel(pos, state) {
+//         let drawn = [];
+//         drawn.push({x: pos.x, y: pos.y, color: state.color});
+//         if (gapBetween(drawn[0], state.lastPixel)) {
+//             let fillGap = getLine(drawn[0], state.lastPixel);
+//             console.log(fillGap);
+//             drawn = fillGap.concat(drawn.slice(0));
+//         }
+
+//         state.lastPixel = drawn[drawn.length - 1];
+//         dispatch({picture: state.picture.draw(drawn)});
+//     }
+//     drawPixel(start, state);
+//     return drawPixel;
+// }
+
+function drawLine(from, to, color) {
+    let points = [];
+    if (Math.abs(from.x - to.x) > Math.abs(from.y - to.y)) {
+        if (from.x > to.x) [from, to] = [to, from];
+        let slope = (to.y - from.y) / (to.x - from.x);
+        for (let {x, y} = from; x <= to.x; x++) {
+            points.push({x, y: Math.round(y), color});
+            y += slope;
+        }
+    } else {
+        if (from.y > to.y) [from, to] = [to, from];
+        let slope = (to.x - from.x) / (to.y - from.y);
+        for (let {x, y} = from; y <= to.y; y++) {
+            points.push({x: Math.round(x), y, color});
+            x += slope;
+        }
     }
-    drawPixel(pos, state);
-    return drawPixel;
+    return points;
 }
 
-function improvedDraw(start, state, dispatch) {
-    function gapBetween(pixel, nextPixel) {
-        if (nextPixel == null) return false;
-        let gap = true;
-        let connected = [{dx: -1, dy: -1}, {dx: 0, dy: -1}, {dx: 1, dy: -1},
-        {dx: -1, dy: 0}, {dx: 0, dy: 0}, {dx: 1, dy: 0}, 
-        {dx: -1, dy: 1}, {dx: 0, dy: 1}, {dx: 1, dy: 1}];
-        connected.forEach(({dx, dy}) => {
-            if(pixel.x + dx == nextPixel.x && pixel.y + dy == nextPixel.y) gap = false;
-        });
-        return gap;
+function draw(pos, state, dispatch) {
+    function connect(newPos, state) {
+        let line = drawLine(pos, newPos, state.color);
+        pos = newPos;
+        dispatch({picture: state.picture.draw(line)});
     }
-    function getLine(first, last) {
-        let points = [];
-        for(let y = first.y; y <= last.y; y++) {
-            for(let x = first.x; x <= last.x; x++) {
-                points.push({x, y, color: state.color});
-            }
-        }
-        return points;
-    }   
-    function drawPixel(pos, state) {
-        let drawn = [];
-        drawn.push({x: pos.x, y: pos.y, color: state.color});
-        drawn.forEach((p, i) => {
-            if (gapBetween(p, drawn[i + 1])) {
-                let fillGap = getLine
-            }
-        });
-        dispatch({picture: state.picture.draw(drawn)});
-    }
-    drawPixel(start, state);
-    return drawPixel;
+    connect(pos, state);
+    return connect;
+}
+
+function line(pos, state, dispatch) {
+    return end => {
+        let line = drawLine(pos, end, state.color);
+        dispatch({picture: state.picture.draw(line)});
+    };
 }
 
 function rectangle(start, state, dispatch) {
@@ -415,7 +455,7 @@ const startState = {
     doneAt: 0
 };
 
-const baseTools = {draw, fill, rectangle, pick, circle, improvedDraw};
+const baseTools = {draw, fill, rectangle, pick, circle, line};
 
 const baseControls = [
     ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton
